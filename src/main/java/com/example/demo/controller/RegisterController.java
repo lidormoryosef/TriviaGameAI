@@ -1,0 +1,35 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.RegisterInfoIn;
+import com.example.demo.model.User;
+import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/register")
+public class RegisterController {
+    @Autowired
+    UserService userService;
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<?> register( @RequestBody RegisterInfoIn registerInfoIn)
+    {
+        String username = registerInfoIn.getUsername();
+        Optional<User> user = userService.findByUsername(username);
+        if (user.isPresent()){
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        }
+        User userInfo = registerInfoIn.toUser();
+        if (userInfo == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        userService.save(userInfo);
+        return new ResponseEntity<>(userInfo, HttpStatus.OK);
+    }
+}
