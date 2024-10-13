@@ -1,5 +1,4 @@
 package com.example.demo.model;
-import com.example.demo.util.Utils;
 import org.hibernate.validator.constraints.Length;
 
 import static com.example.demo.model.User.UserBuilder.aUser;
@@ -13,8 +12,6 @@ public class RegisterInfoIn {
     private String username;
     @Length(max = 60)
     private String password;
-    @Length(max = 60)
-    private String repeatPassword;
 
     public String getFirstName() {
         return firstName;
@@ -48,17 +45,10 @@ public class RegisterInfoIn {
         this.password = password;
     }
 
-    public String getRepeatPassword() {
-        return repeatPassword;
-    }
-
-    public void setRepeatPassword(String repeatPassword) {
-        this.repeatPassword = repeatPassword;
-    }
     public User toUser() {
         if (username.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || password.isEmpty())
             return null;
-        return aUser().username(username).firstName(firstName).lastName(lastName).password(Utils.hashPassword(password,username))
+        return aUser().username(username).firstName(firstName).lastName(lastName).password(password)
                 .build();
     }
 
