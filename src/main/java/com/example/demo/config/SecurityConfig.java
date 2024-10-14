@@ -35,7 +35,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated().and()
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/api/login")
-                        .defaultSuccessUrl("/api/welcome", true)
+                        .defaultSuccessUrl("/api/login-success", true)
                         .failureUrl("/api/login?error=true")
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));

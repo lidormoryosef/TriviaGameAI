@@ -80,7 +80,7 @@
         <button type="submit">Register</button>
     </form>
     <div class="link">
-        <p>Already have an account? <a href="login">Login here</a></p>
+        <p>Already have an account? <a href="loginPage">Login here</a></p>
     </div>
 </div>
 <script>
@@ -111,8 +111,17 @@
             })
             .then(response => {
                 if (response.ok) {
-                    return response.json(); // Parse JSON response
-                } else {
+                    document.getElementById('registerForm').reset();
+                    window.location.href = '/api/loginPage';
+                    console.log("aaa");
+                } else if (response.status === 409){
+                    alert("Conflict: This username is already taken.");
+                    throw new Error ("Conflict: This username is already taken.");
+                }else if (response.status === 400){
+                    alert('Bad Request: Please check your input and try again.');
+                    throw new Error('Bad Request: Please check your input and try again.');
+                }else{
+                    alert('Registration failed');
                     throw new Error('Registration failed');
                 }
             })

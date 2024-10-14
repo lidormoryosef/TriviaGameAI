@@ -6,14 +6,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PageController {
 
-    @GetMapping("/api/login")
+    @GetMapping("/api/loginPage")
     public String loginPage() {
-        return "forward:/login.html";
+        return "forward:/loginPage.html";
     }
 
-    @GetMapping("/api/register")
+    @GetMapping("/api/registerPage")
     public String registerPage() {
-        return "forward:/register.html";
+        return "forward:/registerPage.html";
+    }
+
+    @GetMapping("/")
+    public String redirectToLogin() {
+        return "redirect:/api/loginPage";
+    }
+    @GetMapping("/api/homePage")
+    public String redirectToHome() {
+        return "forward:/homePage.html";
     }
 
 }

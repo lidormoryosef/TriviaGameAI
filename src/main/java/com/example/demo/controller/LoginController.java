@@ -14,7 +14,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -40,28 +39,57 @@ public class LoginController {
         if (authentication.isAuthenticated()){
             return new ResponseEntity<>(jwtService.generateToken(username), HttpStatus.OK);
         }
-
         return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
     }
-    @GetMapping("/welcome")
-    public String welcome(@AuthenticationPrincipal OAuth2User user) {
+
+@GetMapping("/login-success")
+public String loginSuccessPage() {
+    return "<html>" +
+            "<body>" +
+            "<h1>Login successful!</h1>" +
+            "<p>Please wait while we process your login...</p>" +
+            "<script>" +
+            "    window.onload = function() {" +
+            "        fetch('http://localhost:8080/api/token', {" +
+            "            method: 'POST'," +
+            "            credentials: 'include'" +
+            "        })" +
+            "        .then(response => {" +
+            "           if (response.ok){ " +
+            "               return response.text()" +
+            "           }else{" +
+            "               window.location.href = '/api/loginPage';" +
+            "               throw new Error('Login failed. Please try again.');" +
+            "           }" +
+            "          })" +
+            "        .then(token => {" +
+            "            localStorage.setItem('jwtToken', token);" +
+            "            window.location.href = '/api/homePage';" +
+            "        })" +
+            "        .catch(error => {" +
+            "            console.error('Error fetching token:', error);" +
+            "        });" +
+            "    };" +
+            "</script>" +
+            "</body>" +
+            "</html>";
+}
+    @PostMapping("/token")
+    public ResponseEntity<?> getToken(@AuthenticationPrincipal OAuth2User user) {
         if (user == null) {
-            return "You must be logged in to view this page.";
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        String name;
-        String id = "";
-        if (user.getAttribute("sub") != null) {
-            name = user.getAttribute("name");
-            id = user.getAttribute("sub");
+        String id;
+        if (user.getAttribute("name") != null) {
+            id = user.getAttribute("name");
+            return new ResponseEntity<>(jwtService.generateToken(id), HttpStatus.OK);
         }
         else if (user.getAttribute("login") != null) {
-            name = user.getAttribute("login");
-        } else {
-            name = "Guest";
-            id = "No ID";
+            id = user.getAttribute("login");
+            return new ResponseEntity<>(jwtService.generateToken(id), HttpStatus.OK);
         }
-
-        return "Hello, " + name + "! Your ID is: " + id;
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
+
 
 }

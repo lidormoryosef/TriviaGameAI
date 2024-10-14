@@ -86,7 +86,7 @@
         </a>
     </div>
     <div class="link">
-        <p>Don't have an account? <a href="register">Register here</a></p>
+        <p>Don't have an account? <a href="registerPage">Register here</a></p>
     </div>
 </div>
 <script>
@@ -95,9 +95,6 @@
 
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-
-        console.log(`Username: ${username}, Password: ${password}`); // Debugging log
-
         fetch('http://localhost:8080/api/login', { // Ensure this URL is correct
             method: 'POST',
             headers: {
@@ -110,18 +107,22 @@
         })
         .then(response => {
             if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Login failed');
-            }
+                document.getElementById('loginForm').reset();
+                return response.text();
+            } else if (response.status === 404 || response.status === 400){
+                    alert('username or password Incorrect');
+                    throw new Error('username or password Incorrect');
+              }else{
+                    alert('Login failed. Please try again.');
+                    throw new Error('Login failed. Please try again.');
+              }
         })
-        .then(data => {
-            console.log('Login successful:', data);
-            // Redirect or handle successful login here
-        })
+        .then(token => {
+            localStorage.setItem('jwtToken', token);
+            window.location.href = '/api/homePage';
+})
         .catch(error => {
             console.error('Error during login:', error);
-            // Show an error message to the user
         });
     });
 </script>
