@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import com.example.demo.model.*;
 import com.example.demo.redis.Redis;
+import com.example.demo.repo.AttemptsRepository;
 import com.example.demo.repo.QuestionsRepository;
 import com.example.demo.util.Utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,13 +21,15 @@ public class QuestionsService  {
     @Autowired
     QuestionsRepository questionsRepository;
     @Autowired
+    AttemptsRepository attemptsRepository;
+    @Autowired
     Redis redis;
     @Autowired
     ObjectMapper om;
     public void save(QuestionsResponse questionsResponse) {
         new Thread(() -> {
             questionsRepository.save(questionsResponse);
-            System.out.println("Saved Data for " + questionsResponse.getUsername() + "in MongoDB");
+            System.out.println("Saved Data for " + questionsResponse.getUsername() + "in mongodb");
             Object history = redis.get(questionsResponse.getUsername());
             if(history != null){
                 try {
@@ -79,12 +83,32 @@ public class QuestionsService  {
             List<TrueOrFalseQuestion> trueOrFalseQuestions = Utils.parseTrueOrFalseQuestions(response.get(1));
             return new QuestionsResponse(username,fileInfo.getTitle(),mcQuestions,mcQuestions.size(),trueOrFalseQuestions,trueOrFalseQuestions.size());
         }catch (Exception e){
-            System.out.println("Error in parse" + e.toString());
+            System.out.println("Error in parse" + e);
             return null;
         }
     }
     public QuestionsResponse findAllByUsernameAndTitle(String username,String title){
-        return createOneFile((questionsRepository.findAllByUsernameAndTitle(username,title)));
+        try {
+            return createOneFile((questionsRepository.findAllByUsernameAndTitle(username,title)));
+        }catch (Exception e){
+            return null;
+        }
+    }
+    public List<Attempt> findAllAttemptsByUsernameAndTitle(String username,String title){
+        try {
+            return attemptsRepository.findAllByUsernameAndTitle(username,title);
+        }catch (Exception e){
+            System.out.println("Failed to read data for " + username + "from mongodb");
+            return null;
+        }
+    }
+    public Attempt addAttempts(AttemptRequest attemptRequest,String username,String title){
+        try {
+            return attemptsRepository.save(attemptRequest.toAttempt(username,title));
+        }catch (Exception exception){
+            System.out.println("Failed to save data for " + username + "in mongodb");
+            return null;
+        }
     }
     private QuestionsResponse createOneFile(List<QuestionsResponse> responses){
         QuestionsResponse questionsResponse = new QuestionsResponse();

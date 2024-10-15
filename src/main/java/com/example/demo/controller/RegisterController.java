@@ -32,7 +32,9 @@ public class RegisterController {
         if (userInfo == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
-        userService.save(userInfo);
+        User user1 = userService.save(userInfo);
+        if (user1 == null)
+            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(userInfo, HttpStatus.OK);
     }
 }

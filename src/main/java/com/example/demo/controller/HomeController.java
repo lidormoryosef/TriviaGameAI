@@ -43,7 +43,7 @@ public class HomeController {
 //        if(response == null)
 //            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         QuestionsResponse questionsResponse = questionsService.createQuestionsResponse(response,username,fileInfo);
-        questionsService.save(questionsResponse);
+        //questionsService.save(questionsResponse);
         return new ResponseEntity<>(questionsResponse, HttpStatus.OK);
     }
     String mcq = "1. When did the Yom Kippur War take place?\n" +
