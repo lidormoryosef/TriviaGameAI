@@ -1,34 +1,15 @@
 package com.example.demo.model;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 @Data
-@Document(collection = "MCQuestions")
-public class MCQuestionInfo {
-    @Id
-    private String id;
-    @NotBlank
-    @Size(max = 60)
-    private String username;
-    @NotBlank
+public class MCQuestion {
     private String question;
-    @NotBlank
     private String option1;
-    @NotBlank
     private String option2;
-    @NotBlank
     private String option3;
-    @NotBlank
     private String option4;
-    @NotBlank
     private int answer;
      public static final class MCQuestionBuilder {
-        private String id;
-        private String username;
         private String question;
         private String option1;
         private String option2;
@@ -42,16 +23,7 @@ public class MCQuestionInfo {
             return new MCQuestionBuilder();
 
         }
-        public MCQuestionBuilder id(String id){
-            this.id = id;
-            return this;
-        }
 
-
-        public MCQuestionBuilder username(String username){
-            this.username = username;
-            return this;
-        }
         public MCQuestionBuilder question(String question){
             this.question = question;
             return this;
@@ -76,10 +48,8 @@ public class MCQuestionInfo {
             this.answer = answer;
             return this;
         }
-        public MCQuestionInfo build(){
-            MCQuestionInfo questionInfo = new MCQuestionInfo();
-            questionInfo.setId(id);
-            questionInfo.setUsername(username);
+        public MCQuestion build(){
+            MCQuestion questionInfo = new MCQuestion();
             questionInfo.setQuestion(question);
             questionInfo.setOption1(option1);
             questionInfo.setOption2(option2);

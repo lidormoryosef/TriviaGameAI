@@ -1,14 +1,14 @@
 package com.example.demo.util;
 
-import com.example.demo.model.MCQuestionInfo;
+import com.example.demo.model.MCQuestion;
 import com.example.demo.model.TrueOrFalseQuestion;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Utils {
-    public static List<MCQuestionInfo> parseMCQuestion(String input) {
-        List<MCQuestionInfo> questions = new ArrayList<>();
+    public static List<MCQuestion> parseMCQuestion(String input) {
+        List<MCQuestion> questions = new ArrayList<>();
         String[] questionBlocks = input.split("\\n\\n");
 
         for (String block : questionBlocks) {
@@ -16,7 +16,7 @@ public class Utils {
 
             if (lines.length < 6) continue;
 
-            MCQuestionInfo questionInfo = new MCQuestionInfo();
+            MCQuestion questionInfo = new MCQuestion();
             questionInfo.setQuestion(lines[0].substring(lines[0].indexOf(".") + 2));
 
             questionInfo.setOption1(lines[1].substring(3));

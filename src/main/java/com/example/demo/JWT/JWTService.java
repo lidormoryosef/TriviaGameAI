@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.JWT;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -22,46 +22,16 @@ import java.util.function.Function;
 
 @Service
 public class JWTService implements Serializable {
-//
-//
-//    private String secretKey = "";
-//
-//    public JWTService() {
-//
-//        try {
-//            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-//            SecretKey sk = keyGen.generateKey();
-//            secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
-//        } catch (NoSuchAlgorithmException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-//    public String generateToken(String username) {
-//        Map<String, Object> claims = new HashMap<>();
-//        return Jwts.builder()
-//                .claims()
-//                .add(claims)
-//                .subject(username)
-//                .issuedAt(new Date(System.currentTimeMillis()))
-//                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
-//                .and()
-//                .signWith(getKey())
-//                .compact();
-//
-//    }
-//
-//    private Key getKey() {
-//        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-//        return Keys.hmacShaKeyFor(keyBytes);
-//    }
     private static final long serialVersionUID = -2550185165626007488L;
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
     private String secret = "L1d0rTr1v1aGameM0rY0sefL1d0rTr1v1aGameM0rY0sefL1d0rTr1v1aGameM0rY0sefL1d0rTr1v1aGameM0rY0sefL1d0rTr1v1aGameM0rY0sefL1d0rTr1v1aGameM0rY0sefL1d0rTr1v1aGameM0rY0sefL1d0rTr1v1aGameM0rY0sefL1d0rTr1v1aGameM0rY0sef";
 
     public String getUsernameFromToken(String token) {
-
-        return getClaimFromToken(token, Claims::getSubject);
+        try {
+            return getClaimFromToken(token, Claims::getSubject);
+        }catch (Exception e){
+            return null;
+        }
     }
 
     public Date getExpirationDateFromToken(String token) {
