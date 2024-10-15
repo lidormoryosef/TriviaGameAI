@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.LoginRequest;
 import com.example.demo.model.User;
-import com.example.demo.service.JWTService;
+import com.example.demo.JWT.JWTService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

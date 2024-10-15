@@ -1,5 +1,6 @@
-package com.example.demo.model;
+package com.example.demo.OpenAI;
 
+import com.example.demo.model.Message;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

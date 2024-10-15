@@ -1,10 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.model.ChatGPTRequest;
-import com.example.demo.model.ChatGptResponse;
-import com.example.demo.model.Message;
+import com.example.demo.OpenAI.ChatGPTRequest;
+import com.example.demo.OpenAI.ChatGptResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.example.demo.config.OpenAIConfig.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,13 +21,14 @@ public class OpenAiService {
     public List<String> getOpenAIResponse(String question) throws Exception {
         try{
             List<String> result = new ArrayList<>();
-            System.out.println(forMCQ + question);
             ChatGPTRequest request1 =new ChatGPTRequest(model, forMCQ + question);
             ChatGPTRequest request2 =new ChatGPTRequest(model, forTrueOrFalseQ + question);
             ChatGptResponse chatGptResponse = template.postForObject(url, request1, ChatGptResponse.class);
             result.add(chatGptResponse.getChoices().get(0).getMessage().getContent());
+            System.out.println(result.get(0));
             chatGptResponse = template.postForObject(url,request2,ChatGptResponse.class);
             result.add(chatGptResponse.getChoices().get(0).getMessage().getContent());
+            System.out.println(result.get(1));
             return result;
         } catch (Exception e) {
             e.printStackTrace();
