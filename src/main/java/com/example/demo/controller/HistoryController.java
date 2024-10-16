@@ -40,7 +40,7 @@ public class HistoryController {
 
     }
     @RequestMapping(value = "/{title}/attempts", method = RequestMethod.GET)
-    public ResponseEntity<?> getHistoryAttempts(@RequestHeader("Authorization") String authorizationHeader, @RequestParam String title){
+    public ResponseEntity<?> getHistoryAttempts(@RequestHeader("Authorization") String authorizationHeader, @PathVariable String title){
         String username = jwtService.getUsernameFromToken(authorizationHeader.substring(7));
         if (username == null)
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);

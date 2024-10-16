@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Page</title>
+    <style>
+        #greeting {
+            font-size: 35px;
+            color: #333;
+        }
+
+        header {
+            width: 98%;
+            display: flex;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        #attempts-container {
+            position: fixed;
+            top: 80px; /* Adjust according to the header height */
+            left: 20px;
+            width: 300px;
+            max-height: calc(100vh - 100px); /* Adjust based on header and padding */
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #attempt-details {
+            margin-top: 80px;
+            margin-left: 350px; /* Space from the left side */
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 600px;
+        }
+
+        .attempt {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .attempt:hover {
+            background-color: #f0f0f0;
+        }
+
+        .attempt-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .attempt-info {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .attempt-request {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .attempt-request-info {
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div id="greeting">Hello, user</div>
+    <div>
+        <button class="btn" onclick="logout()">Logout</button>
+        <button class="btn" onclick="homePage()">Home Page</button>
+    </div>
+</header>
+
+<div id="attempts-container"></div>
+<div id="attempt-details" style="display: none;"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const username = localStorage.getItem('username');
+        if (!username) {
+            window.location.href = 'loginPage';
+        }
+        document.getElementById('greeting').innerText = 'Hello, ' + username;
+
+        // Fetch the list of attempts from the server
+        fetch('http://localhost:8080/api/history', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                const attemptsContainer = document.getElementById('attempts-container');
+                data.forEach(attempt => {
+                    const attemptDiv = document.createElement('div');
+                    attemptDiv.classList.add('attempt');
+                    attemptDiv.innerHTML = `
+                    <div class="attempt-title">${attempt.title}</div>
+                    <div class="attempt-info">Number of MCQs: ${attempt.numberMCQ}</div>
+                    <div class="attempt-info">Number of True/False questions: ${attempt.numberTrueOrFalseQ}</div>
+                `;
+                    // Add click event to each attempt to fetch its details
+                    attemptDiv.onclick = () => fetchAttemptDetails(attempt.title);
+                    attemptsContainer.appendChild(attemptDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching attempts:', error);
+            });
+    });
+
+    function fetchAttemptDetails(title) {
+        fetch(`http://localhost:8080/api/history/${title}/attempts`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                const attemptDetailsContainer = document.getElementById('attempt-details');
+                attemptDetailsContainer.style.display = 'block';
+                attemptDetailsContainer.innerHTML = `<h3>Details for: ${title}</h3>`;
+                data.forEach(request => {
+                    const requestDiv = document.createElement('div');
+                    requestDiv.classList.add('attempt-request');
+                    requestDiv.innerHTML = `
+                    <div class="attempt-request-info">MCQ: ${request.successMCQ}/${request.totalMCQ}</div>
+                    <div class="attempt-request-info">True/False: ${request.successTrueOrFalse}/${request.totalTrueOrFalse}</div>
+                `;
+                    attemptDetailsContainer.appendChild(requestDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching attempt details:', error);
+            });
+    }
+
+    function logout() {
+        localStorage.removeItem('jwtToken');
+        localStorage.removeItem('username');
+        window.location.href = 'loginPage';
+    }
+
+    function homePage() {
+        window.location.href = 'homePage';
+    }
+</script>
+</body>
+</html>

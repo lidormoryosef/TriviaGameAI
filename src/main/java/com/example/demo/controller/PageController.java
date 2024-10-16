@@ -24,5 +24,9 @@ public class PageController {
     public String redirectToHome() {
         return "forward:/homePage.html";
     }
+    @GetMapping("/api/historyPage")
+    public String redirectToHistory() {
+        return "forward:/historyPage.html";
+    }
 
 }

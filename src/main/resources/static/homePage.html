@@ -234,6 +234,7 @@
             })
             .then(username => {
                 document.getElementById('greeting').innerText = 'Hello, ' + username;
+                localStorage.setItem('username', username);
             })
             .catch(error => {
                 console.error('Error fetching username:', error);
@@ -309,7 +310,6 @@
             })
             .then(data => {
                 if (data) {
-                    console.log(data)
                     displayQuestions(data);
                 } else {
                     alert('Received an empty response from the server.');
@@ -385,7 +385,6 @@
                 answers.push({question: q.name, answer: q.value});
             }
         });
-        console.log(answers);
         // Calculate the score based on the answers provided in the data
         let scoreMC = 0;
 
@@ -420,7 +419,6 @@
                 results.push({question: question.question, yourAnswer: "", correctAnswer: question.answer});
             }
         });
-        console.log(results);
         const totalQuestions = data.lenMcQuestion + data.lenTrueOrFalseQuestions;
 
         document.getElementById('result').innerText = `Score: ${scoreTOF + scoreMC}/${totalQuestions}`;
@@ -429,8 +427,6 @@
         const resultDetails = document.getElementById('result-details');
         resultDetails.innerHTML = ''; // Clear previous results
         results.forEach((result, index) => {
-            console.log(result.yourAnswer)
-            console.log(result.correctAnswer)
             const resultText = result.yourAnswer == String(result.correctAnswer)
                 ? `<p>Question ${index + 1}: Correct!</p>`
                 : `<p>Question ${index + 1}: Incorrect. Correct answer: ${result.correctAnswer}</p>`;
@@ -471,6 +467,7 @@
 
     function logout() {
         localStorage.removeItem('jwtToken');
+        localStorage.removeItem('username');
         window.location.href = 'loginPage';
     }
 

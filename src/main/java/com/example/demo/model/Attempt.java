@@ -6,15 +6,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Document(collection = "attempts")
-public class Attempt {
-    @Id
-    private String id;
-    private String username;
-    private String title;
-    private int successMCQ;
-    private int totalMCQ;
-    private int successTrueOrFalse;
-    private int totalTrueOrFalse;
+    public class Attempt {
+        @Id
+        private String id;
+        private String username;
+        private String title;
+        private int successMCQ;
+        private int totalMCQ;
+        private int successTrueOrFalse;
+        private int totalTrueOrFalse;
 
 
-}
+    }
