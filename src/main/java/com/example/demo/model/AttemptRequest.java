@@ -8,6 +8,7 @@ public class AttemptRequest {
     private int totalMCQ;
     private int successTrueOrFalse;
     private int totalTrueOrFalse;
+    private String[] results;
 
     public Attempt toAttempt(String username,String title){
         Attempt attempt = new Attempt();
@@ -17,6 +18,7 @@ public class AttemptRequest {
         attempt.setTotalMCQ(totalMCQ);
         attempt.setSuccessTrueOrFalse(successTrueOrFalse);
         attempt.setTotalTrueOrFalse(totalTrueOrFalse);
+        attempt.setResults(results);
         return attempt;
     }
 }

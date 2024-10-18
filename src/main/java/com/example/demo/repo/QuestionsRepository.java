@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface QuestionsRepository extends CrudRepository<QuestionsResponse, String> {
-    List<QuestionsResponse> findAllByUsernameAndTitle(String username,String title);
+    QuestionsResponse findByUsernameAndTitle(String username,String title);
 }

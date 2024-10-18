@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
         private int totalMCQ;
         private int successTrueOrFalse;
         private int totalTrueOrFalse;
+        private String[] results;
 
 
     }

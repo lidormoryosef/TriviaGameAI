@@ -5,6 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>History Page</title>
     <style>
+        .row {
+            display: flex;
+            gap: 10px; /* Adjust the gap between the elements */
+            margin-top: 30px;
+        }
+        #result {
+            margin-top: 180px;
+            color: #333;
+        }
+        #myButton {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 25px;
+            margin-left: 10px;
+        }
+        #questionsForm {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 750px;
+            max-height: 600px;
+            height: 80%;
+            width: 100%;
+            overflow-y: auto; /* Enable vertical scrolling */
+            margin-top: 35px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        #result-details {
+            margin-top: 50px;
+            color: #333;
+        }
         #greeting {
             font-size: 35px;
             color: #333;
@@ -20,6 +64,25 @@
             background: rgba(255, 255, 255, 0.8);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
+        .options {
+            margin-left: 20px; /* Indent options for better visibility */
+        }
+        .question-container {
+            margin-bottom: 20px; /* Space between questions */
+        }
+        #checkAnswers {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        #checkAnswers:hover {
+            background-color: #218838;
+        }
 
         .btn {
             background-color: #007BFF;
@@ -31,8 +94,17 @@
             font-size: 14px;
             margin-left: 10px;
         }
-
-        .btn:hover {
+        .btn-another{
+            background-color: #2fff00;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        .btn:hover .btn-another:hover{
             background-color: #0056b3;
         }
 
@@ -94,6 +166,7 @@
             margin-bottom: 10px;
         }
 
+
         .attempt-request-info {
             font-size: 14px;
             color: #555;
@@ -110,7 +183,14 @@
 </header>
 
 <div id="attempts-container"></div>
-<div id="attempt-details" style="display: none;"></div>
+<span id="attempt-details" style="display: none;"></span>
+<div class="row">
+    <div id="questionsForm"></div>
+
+    <div id="result-details">
+    </div>
+    <div id="result"></div>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -130,12 +210,13 @@
             .then(response => response.json())
             .then(data => {
                 const attemptsContainer = document.getElementById('attempts-container');
+                attemptsContainer.innerHTML = `<h3>History of Questions (Ordered by Title)</h3>`;
                 data.forEach(attempt => {
                     const attemptDiv = document.createElement('div');
                     attemptDiv.classList.add('attempt');
                     attemptDiv.innerHTML = `
                     <div class="attempt-title">${attempt.title}</div>
-                    <div class="attempt-info">Number of MCQs: ${attempt.numberMCQ}</div>
+                    <div class="attempt-info">Number of MCQs questions: ${attempt.numberMCQ}</div>
                     <div class="attempt-info">Number of True/False questions: ${attempt.numberTrueOrFalseQ}</div>
                 `;
                     // Add click event to each attempt to fetch its details
@@ -157,25 +238,275 @@
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 const attemptDetailsContainer = document.getElementById('attempt-details');
                 attemptDetailsContainer.style.display = 'block';
-                attemptDetailsContainer.innerHTML = `<h3>Details for: ${title}</h3>`;
+                attemptDetailsContainer.innerHTML = `<h3>History attempts for: ${title}</h3>`;
+
                 data.forEach(request => {
                     const requestDiv = document.createElement('div');
                     requestDiv.classList.add('attempt-request');
                     requestDiv.innerHTML = `
-                    <div class="attempt-request-info">MCQ: ${request.successMCQ}/${request.totalMCQ}</div>
-                    <div class="attempt-request-info">True/False: ${request.successTrueOrFalse}/${request.totalTrueOrFalse}</div>
+                    <div class="attempt-request-info">MCQ ratio: ${request.successMCQ}/${request.totalMCQ}</div>
+                    <div class="attempt-request-info">True/False ratio: ${request.successTrueOrFalse}/${request.totalTrueOrFalse}</div>
+                    <div class="attempt-request-info">Total ratio: ${request.successTrueOrFalse + request.successMCQ}/${request.totalTrueOrFalse + request.totalMCQ}</div>
                 `;
+                    requestDiv.onclick = () => getHistory(request);
                     attemptDetailsContainer.appendChild(requestDiv);
                 });
+                const button = document.createElement('button');
+                button.textContent = 'Try Another Attempt for ' + title;
+                button.id = 'questionsButton';
+                button.className = 'btn-another';
+
+                button.onclick = function () {
+                    getQuestions(title)
+                };
+                document.getElementById('attempt-details').appendChild(button);
             })
             .catch(error => {
                 console.error('Error fetching attempt details:', error);
             });
     }
 
+    function getHistory(attempt) {
+        const attemptDetailsContainer = document.getElementById('attempt-details');
+        attemptDetailsContainer.style.display = 'none';
+        const attempts = document.getElementById('attempts-container');
+        attempts.style.display = 'none';
+        fetch(`http://localhost:8080/api/history/${attempt.title}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    displayHistory(data,attempt);
+                } else {
+                    alert('Received an empty response from the server.');
+                }
+            })
+    }
+    function getQuestions(title) {
+        const attemptDetailsContainer = document.getElementById('attempt-details');
+        attemptDetailsContainer.style.display = 'none';
+        const attempts = document.getElementById('attempts-container');
+        attempts.style.display = 'none';
+        fetch(`http://localhost:8080/api/history/${title}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    displayQuestions(data);
+                } else {
+                    alert('Received an empty response from the server.');
+                }
+            })
+    }
+    function displayHistory(questions ,attempt) {
+        const questionsForm = document.getElementById('questionsForm');
+        questionsForm.innerHTML = '';
+        // Generate MCQuestions
+        let i = 1;
+        questions.mcQuestion.forEach(mcQuestion => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'form-group';
+
+            questionDiv.innerHTML = `
+            <label>${i}.    ${mcQuestion.question}</label>
+            <input type="radio" name="mc-${mcQuestion.question}" value="1"> ${mcQuestion.option1}<br>
+            <input type="radio" name="mc-${mcQuestion.question}" value="2"> ${mcQuestion.option2}<br>
+            <input type="radio" name="mc-${mcQuestion.question}" value="3"> ${mcQuestion.option3}<br>
+            <input type="radio" name="mc-${mcQuestion.question}" value="4"> ${mcQuestion.option4}<br>
+        `;
+            questionsForm.appendChild(questionDiv);
+            i += 1;
+        });
+        // Generate TrueOrFalseQuestions
+        questions.trueOrFalseQuestions.forEach((question, index) => {
+            const questionContainer = document.createElement('div');
+            questionContainer.className = 'question-container';
+            questionContainer.innerHTML = `
+                <h4>${i}.   ${question.question}</h4>
+                <div class="options">
+                    <label><input type="radio" name="trueOrFalseQuestion${question.question}" value="true"> True</label><br>
+                    <label><input type="radio" name="trueOrFalseQuestion${question.question}" value="false"> False</label>
+                </div>
+            `;
+            questionsForm.appendChild(questionContainer);
+            i += 1
+        });
+        document.getElementById('result').innerText = `Score: ${attempt.successMCQ + attempt.successTrueOrFalse}/${attempt.totalMCQ + attempt.totalTrueOrFalse}`;
+        const resultDetails = document.getElementById('result-details');
+        resultDetails.innerHTML = ''; // Clear previous results
+        attempt.results.forEach((result, index) => {
+            const resultText =  `<p>${result}</p>`;
+
+            resultDetails.innerHTML += resultText;
+        });
+        questionsForm.style.display = 'block'; // Show questions form
+        const button = document.createElement('button');
+        button.textContent = 'Back to history';
+        button.id = 'myButton';
+        button.className = 'btn';
+
+        button.onclick = function () {
+            window.location.href = 'historyPage';
+        };
+        document.getElementById('result-details').appendChild(button);
+    }
+    function displayQuestions(data) {
+        const questionsForm = document.getElementById('questionsForm');
+        questionsForm.innerHTML = '';
+        // Generate MCQuestions
+        let i = 1;
+        data.mcQuestion.forEach(mcQuestion => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'form-group';
+
+            questionDiv.innerHTML = `
+            <label>${i}.    ${mcQuestion.question}</label>
+            <input type="radio" name="mc-${mcQuestion.question}" value="1"> ${mcQuestion.option1}<br>
+            <input type="radio" name="mc-${mcQuestion.question}" value="2"> ${mcQuestion.option2}<br>
+            <input type="radio" name="mc-${mcQuestion.question}" value="3"> ${mcQuestion.option3}<br>
+            <input type="radio" name="mc-${mcQuestion.question}" value="4"> ${mcQuestion.option4}<br>
+        `;
+            questionsForm.appendChild(questionDiv);
+            i += 1;
+        });
+        // Generate TrueOrFalseQuestions
+        data.trueOrFalseQuestions.forEach((question, index) => {
+            const questionContainer = document.createElement('div');
+            questionContainer.className = 'question-container';
+            questionContainer.innerHTML = `
+                <h4>${i}.   ${question.question}</h4>
+                <div class="options">
+                    <label><input type="radio" name="trueOrFalseQuestion${question.question}" value="true"> True</label><br>
+                    <label><input type="radio" name="trueOrFalseQuestion${question.question}" value="false"> False</label>
+                </div>
+            `;
+            questionsForm.appendChild(questionContainer);
+            i += 1
+        });
+        const checkAnswersButton = document.createElement('button');
+        checkAnswersButton.id = 'checkAnswers';
+        checkAnswersButton.textContent = 'Check Answers';
+        checkAnswersButton.onclick = function () {
+            checkAnswers(data);
+        };
+
+        questionsForm.appendChild(checkAnswersButton);
+
+        questionsForm.style.display = 'block'; // Show questions form
+    }
+    function checkAnswers(data) {
+        const answers = [];
+        const results = [];
+
+        const mcQuestions = document.querySelectorAll('input[type="radio"][name^="mc-"]');
+        mcQuestions.forEach(q => {
+            if (q.checked) {
+                answers.push({question: q.name, answer: q.value});
+            }
+        });
+
+        // Collect answers for true/false questions
+        const tofQuestions = document.querySelectorAll('input[type="radio"][name^="trueOrFalseQuestion"]');
+        tofQuestions.forEach(q => {
+            if (q.checked) {
+                answers.push({question: q.name, answer: q.value});
+            }
+        });
+        // Calculate the score based on the answers provided in the data
+        let scoreMC = 0;
+
+        // Check multiple-choice questions
+        data.mcQuestion.forEach((question, index) => {
+            const selectedAnswer = answers.find(answer => answer.question === `mc-${question.question}`);
+            if (selectedAnswer) {
+                if (parseInt(selectedAnswer.answer) === question.answer)
+                    scoreMC++;
+                results.push({
+                    question: question.question,
+                    yourAnswer: parseInt(selectedAnswer.answer),
+                    correctAnswer: question.answer
+                });
+            } else {
+                results.push({question: question.question, yourAnswer: "", correctAnswer: question.answer});
+            }
+        });
+        let scoreTOF = 0
+        data.trueOrFalseQuestions.forEach((question, index) => {
+            const selectedAnswer = answers.find(answer => answer.question === `trueOrFalseQuestion${question.question}`);
+            if (selectedAnswer) {
+                const isCorrect = selectedAnswer.answer === String(question.answer);
+                if (isCorrect)
+                    scoreTOF++;
+                results.push({
+                    question: question.question,
+                    yourAnswer: selectedAnswer.answer,
+                    correctAnswer: question.answer
+                });
+            } else {
+                results.push({question: question.question, yourAnswer: "", correctAnswer: question.answer});
+            }
+        });
+        const totalQuestions = data.lenMcQuestion + data.lenTrueOrFalseQuestions;
+
+        document.getElementById('result').innerText = `Score: ${scoreTOF + scoreMC}/${totalQuestions}`;
+
+        // Show detailed results
+        const resultDetails = document.getElementById('result-details');
+        resultDetails.innerHTML = ''; // Clear previous results
+        const resultForServer= []
+        var resultText;
+        results.forEach((result, index) => {
+            let i = index +1 ;
+            if (result.yourAnswer == String(result.correctAnswer))
+            {
+                resultText =  `<p>Question ${index + 1}: Correct!</p>`;
+                resultForServer.push("Question " + i + ": Correct!")
+            }else{
+                resultText =`<p>Question ${index + 1}: Incorrect. Correct answer: ${result.correctAnswer}</p>`;
+                resultForServer.push("Question " + i + ": Incorrect. Correct answer:" + result.correctAnswer)
+            }
+            resultDetails.innerHTML += resultText;
+        });
+
+        const button = document.createElement('button');
+        button.textContent = 'Back to history';
+        button.id = 'myButton';
+        button.className = 'btn';
+
+        button.onclick = function () {
+            window.location.href = 'historyPage';
+        };
+        document.getElementById('result-details').appendChild(button);
+        // Optionally send the results to the backend for storage or further processing
+        fetch(`http://localhost:8080/api/history/${data.title}/addAttempt`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({successMCQ:scoreMC, totalMCQ: data.lenMcQuestion,successTrueOrFalse: scoreTOF, totalTrueOrFalse:data.lenTrueOrFalseQuestions,results:resultForServer})
+        })
+            .then(response => {
+                if ( ! response.ok)
+                    alert("error in sending result to server")
+            })
+            .then(result => {
+                console.log('Result from server:', result);
+            })
+            .catch(error => {
+                console.error('Error checking answers:', error);
+            });
+    }
     function logout() {
         localStorage.removeItem('jwtToken');
         localStorage.removeItem('username');
