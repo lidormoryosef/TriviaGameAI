@@ -9,6 +9,6 @@ import org.springframework.data.redis.core.RedisHash;
 @RedisHash("questions")
 public class HistoryRequest {
     private String title;
-    private int NumberMCQ;
-    private int NumberTrueOrFalseQ;
+    private int numberMCQ;
+    private int numberTrueOrFalseQ;
 }
