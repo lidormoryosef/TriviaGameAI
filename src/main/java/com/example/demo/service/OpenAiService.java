@@ -25,10 +25,8 @@ public class OpenAiService {
             ChatGPTRequest request2 =new ChatGPTRequest(model, forTrueOrFalseQ + question);
             ChatGptResponse chatGptResponse = template.postForObject(url, request1, ChatGptResponse.class);
             result.add(chatGptResponse.getChoices().get(0).getMessage().getContent());
-            System.out.println(result.get(0));
             chatGptResponse = template.postForObject(url,request2,ChatGptResponse.class);
             result.add(chatGptResponse.getChoices().get(0).getMessage().getContent());
-            System.out.println(result.get(1));
             return result;
         } catch (Exception e) {
             e.printStackTrace();
