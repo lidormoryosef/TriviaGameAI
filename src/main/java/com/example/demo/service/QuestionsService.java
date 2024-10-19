@@ -80,8 +80,11 @@ public class QuestionsService {
         Object history = redis.get(username);
         if (history != null)
             try {
-                return om.readValue(history.toString(), new TypeReference<List<HistoryRequest>>() {
+                List<HistoryRequest> historyRequests =  om.readValue(history.toString(), new TypeReference<List<HistoryRequest>>() {
                 });
+                if (historyRequests.isEmpty())
+                    return null;
+                return historyRequests;
             } catch (Exception exception) {
                 return null;
             }
@@ -123,11 +126,30 @@ public class QuestionsService {
         try {
             return attemptsRepository.save(attemptRequest.toAttempt(username, title));
         } catch (Exception exception) {
-            System.out.println("Failed to save data for " + username + "in mongodb");
+            System.out.println("Failed to save data for " + username + " in mongodb");
             return null;
         }
     }
-
-
-
+    public void deleteQuestionsByUsernameAndTitle(String username,String title) {
+        questionsRepository.deleteAllByUsernameAndTitle(username,title);
+        System.out.println("Delete data for " + title + " in mongodb");
+    }
+    public void deleteAttempt(String id) {
+        ObjectId objectId = new ObjectId(id);
+        attemptsRepository.deleteById(objectId.toString());
+        System.out.println("Delete data for " + id + "in mongodb");
+    }
+    public void deleteAllAttemptByUsernameAndTitle(String username, String title) {
+        attemptsRepository.deleteAllByUsernameAndTitle(username, title);
+        System.out.println("Delete all attempts for " + username + "in mongodb");
+    }
+    public void deleteTitleFromRedis(String username , String title) throws JsonProcessingException {
+        Object history = redis.get(username);
+        List<HistoryRequest> historyRequests = om.readValue(history.toString(), new TypeReference<List<HistoryRequest>>() {
+        });
+        redis.del(username);
+        historyRequests.removeIf(request -> request.getTitle().equals(title));
+        redis.set(username, om.writeValueAsString(historyRequests));
+        System.out.println("Delete questions for " + username + "in redis");
+    }
 }

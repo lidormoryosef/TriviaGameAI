@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface AttemptsRepository extends CrudRepository<Attempt, String> {
     List<Attempt> findAllByUsernameAndTitle(String username, String title);
+    void deleteAllByUsernameAndTitle(String username,String title);
 }

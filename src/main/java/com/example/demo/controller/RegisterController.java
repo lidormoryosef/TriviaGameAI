@@ -19,7 +19,6 @@ import java.util.Optional;
 public class RegisterController {
     @Autowired
     UserService userService;
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<?> register( @RequestBody RegisterInfoIn registerInfoIn)
     {
@@ -31,7 +30,6 @@ public class RegisterController {
         User userInfo = registerInfoIn.toUser();
         if (userInfo == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        userInfo.setPassword(encoder.encode(userInfo.getPassword()));
         User user1 = userService.save(userInfo);
         if (user1 == null)
             return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);

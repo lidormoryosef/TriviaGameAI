@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -36,12 +35,12 @@ public class HomeController {
         String username = jwtService.getUsernameFromToken(authorizationHeader.substring(7));
         if(username == null)
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        //List<String> response = openAiService.getOpenAIResponse(fileInfo.getFile());
-        List<String> response = new ArrayList<>();
-        response.add(mcq);
-        response.add(torf);
-//        if(response == null)
-//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        List<String> response = openAiService.getOpenAIResponse(fileInfo.getFile());
+//        List<String> response = new ArrayList<>();
+//        response.add(mcq);
+//        response.add(torf);
+        if(response == null)
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         QuestionsResponse questionsResponse = questionsService.createQuestionsResponse(response,username,fileInfo);
         questionsResponse = questionsService.save(questionsResponse);
         return new ResponseEntity<>(questionsResponse, HttpStatus.OK);
