@@ -33,4 +33,13 @@ public class UserService {
         }
 
     }
+    public boolean checkPassword(User user,String password){
+        try {
+            System.out.println(user);
+            return encoder.matches(password, user.getPassword());
+        }
+        catch (Exception e){
+            return false;
+        }
+    }
 }

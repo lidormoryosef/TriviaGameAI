@@ -1,0 +1,22 @@
+version: "3"
+services:
+  appserver:
+    container_name: servertriviagame
+    hostname: localhost
+    image: lidormoryosef/triviagamelocal:003
+    ports:
+      - 8080:8080
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    privileged: true
+    volumes:
+      - ./data/redis:/var/lib/redis
+  mongo:
+    image: mongo:4.0
+    ports:
+      - 27017:27017
+    privileged: true
+    volumes:
+      - ./data/mongo:/var/lib/mongodata  # Ensure this line is properly formatted
