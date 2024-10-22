@@ -205,7 +205,7 @@
         document.getElementById('greeting').innerText = 'Hello, ' + username;
 
         // Fetch the list of attempts from the server
-        fetch('http://localhost:8080/api/history', {
+        fetch('/api/history', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
@@ -259,7 +259,7 @@
     function deleteQuestions(title,attemptDiv) {
         const confirmDelete = confirm('Are you sure you want to delete this attempt?');
         if (confirmDelete) {
-            fetch(`http://localhost:8080/api/history/${title}/`, {
+            fetch(`/api/history/${title}/`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
@@ -284,7 +284,7 @@
     let clickTimeoutForAttempt;
     let isDoubleClickForAttempt = false;
     function fetchAttemptDetails(title) {
-        fetch(`http://localhost:8080/api/history/${title}/attempts`, {
+        fetch(`/api/history/${title}/attempts`, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
@@ -338,7 +338,7 @@
     function deleteAttempt(request, requestDiv) {
         const confirmDelete = confirm('Are you sure you want to delete this attempt?');
         if (confirmDelete) {
-            fetch(`http://localhost:8080/api/history/${request.title}/${request.id}`, {
+            fetch(`/api/history/${request.title}/${request.id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
@@ -364,7 +364,7 @@
         attemptDetailsContainer.style.display = 'none';
         const attempts = document.getElementById('attempts-container');
         attempts.style.display = 'none';
-        fetch(`http://localhost:8080/api/history/${attempt.title}`, {
+        fetch(`/api/history/${attempt.title}`, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
@@ -384,7 +384,7 @@
         attemptDetailsContainer.style.display = 'none';
         const attempts = document.getElementById('attempts-container');
         attempts.style.display = 'none';
-        fetch(`http://localhost:8080/api/history/${title}`, {
+        fetch(`/api/history/${title}`, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
@@ -579,7 +579,7 @@
         };
         document.getElementById('result-details').appendChild(button);
         // Optionally send the results to the backend for storage or further processing
-        fetch(`http://localhost:8080/api/history/${data.title}/addAttempt`, {
+        fetch(`/api/history/${data.title}/addAttempt`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),

@@ -97,7 +97,7 @@
                 alert("Passwords do not match!");
                 return;
             }
-            fetch('http://localhost:8080/api/register', {
+            fetch('/api/register', {
                 method: 'POST', // Use POST method
                 headers: {
                     'Content-Type': 'application/json' // Set content type to JSON
@@ -112,7 +112,7 @@
             .then(response => {
                 if (response.ok) {
                     document.getElementById('registerForm').reset();
-                    window.location.href = '/api/loginPage';
+                    window.location.href = 'loginPage';
                     console.log("aaa");
                 } else if (response.status === 409){
                     alert("Conflict: This username is already taken.");

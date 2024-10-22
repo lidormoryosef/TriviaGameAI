@@ -46,7 +46,7 @@ public String loginSuccessPage() {
             "<p>Please wait while we process your login...</p>" +
             "<script>" +
             "    window.onload = function() {" +
-            "        fetch('http://localhost:8080/api/token', {" +
+            "        fetch('/api/token', {" +
             "            method: 'POST'," +
             "            credentials: 'include'" +
             "        })" +
@@ -54,13 +54,13 @@ public String loginSuccessPage() {
             "           if (response.ok){ " +
             "               return response.text()" +
             "           }else{" +
-            "               window.location.href = '/api/loginPage';" +
+            "               window.location.href = '/loginPage';" +
             "               throw new Error('Login failed. Please try again.');" +
             "           }" +
             "          })" +
             "        .then(token => {" +
             "            localStorage.setItem('jwtToken', token);" +
-            "            window.location.href = '/api/homePage';" +
+            "            window.location.href = '/homePage';" +
             "        })" +
             "        .catch(error => {" +
             "            console.error('Error fetching token:', error);" +

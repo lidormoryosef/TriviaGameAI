@@ -24,9 +24,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                .authorizeRequests().antMatchers("/", "/login", "/css/**", "/js/**","/api/login", "/api/register", "/login/oauth2/**","/static/**",
+                .authorizeRequests().antMatchers("/api/login", "/api/register", "/login/oauth2/**",
+                        "/loginPage",
+                        "registerPage",
                         "/swagger-ui.html",
-                        "/api/swagger-ui.html",
                         "/v2/api-docs",
                         "/configuration/ui",
                         "/swagger-resources/**",
