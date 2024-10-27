@@ -12,6 +12,10 @@ Trivia Game AI is an interactive web application designed to enhance learning th
 
 - User Authentication: Log in to the application using your GitHub or Google account.
 
-- Home Page: Displays your optimal driving hours, highlighting the times of day when you are most focused.
+- Home Page: Users can easily submit articles for trivia question generation, making it simple to start their learning journey.
+ 
+- History Page: Users can view all previously submitted articles, along with all generated questions and their attempts, enabling a comprehensive review of their learning progress.
 
-- History page: show you the how mach time you drive in this driving and count the num of unfocus that he detect in this driving. 
+## Explanation video
+
+[![Watch the video](https://i9.ytimg.com/vi_webp/pKlPoGQLPq4/mq2.webp?sqp=CPD1-bgG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGBYgZShdMA8=&rs=AOn4CLAoAZh4z-T1gnuD9T3tMHiNOBm9pQ)](https://www.youtube.com/watch?v=pKlPoGQLPq4)
