@@ -1,4 +1,4 @@
-# TriviaGame
+# TriviaGameAI
 
 ## Overview
 Trivia Game AI is an interactive web application designed to enhance learning through gamified trivia challenges. By leveraging the power of ChatGPT, users can submit articles or text, and the application will automatically generate trivia questions based on the content provided. This innovative approach transforms passive reading into an engaging and interactive experience, allowing users to test their knowledge and reinforce their learning in a fun and dynamic way.
