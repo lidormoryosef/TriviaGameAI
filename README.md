@@ -18,8 +18,15 @@ Trivia Game AI is an interactive web application designed to enhance learning th
 
 ## Explanation video
 
-[![Watch the video](https://i9.ytimg.com/vi_webp/pKlPoGQLPq4/mq2.webp?sqp=CPD1-bgG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGBYgZShdMA8=&rs=AOn4CLAoAZh4z-T1gnuD9T3tMHiNOBm9pQ)](https://www.youtube.com/watch?v=pKlPoGQLPq4)
+
+[![Watch the video](https://i9.ytimg.com/vi_webp/pKlPoGQLPq4/mq1.webp?sqp=CICJ_bgG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGBwgXyhyMA8%3D&rs=AOn4CLBZnSBU3B1-DIa-QJJgWdKIm_keuQ&retry=7)](https://www.youtube.com/watch?v=pKlPoGQLPq4)
 
 ## Web application
 
 https://trivia-game-ai.lidormoryosef.com
+
+## Diagrama
+
+![triviagame](https://github.com/user-attachments/assets/70f777e9-cdfd-4ad0-8518-8c4c934df66a)
+
+
